@@ -15,11 +15,11 @@
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
             min-height: 100vh;
-            min-height: 100dvh; /* Better for mobile */
+            min-height: 100dvh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-y: auto; /* Enable scrolling */
+            overflow-y: auto;
             overflow-x: hidden;
             padding: 20px;
         }
@@ -108,7 +108,7 @@
             position: relative;
             box-shadow: 0 4px 15px rgba(214, 78, 107, 0.4);
             transition: transform 0.2s, box-shadow 0.2s;
-            -webkit-tap-highlight-color: transparent; /* Removes tap highlight on mobile */
+            -webkit-tap-highlight-color: transparent;
         }
 
         .button:hover {
@@ -120,8 +120,8 @@
             transform: scale(0.95);
         }
 
-        /* Flower container - fixed but doesn't block scrolling */
-        .flower-container {
+        /* Fireworks container */
+        .fireworks-container {
             position: fixed;
             top: 0;
             left: 0;
@@ -132,16 +132,28 @@
             overflow: visible;
         }
 
-        /* Individual flower */
-        .flower {
+        /* Firework rocket */
+        .rocket {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            box-shadow: 0 0 20px gold;
+            z-index: 10000;
+        }
+
+        /* Explosion piece */
+        .piece {
             position: absolute;
             will-change: transform, opacity;
             transform: translateZ(0);
             backface-visibility: hidden;
-            perspective: 1000px;
+            font-weight: bold;
+            white-space: nowrap;
+            text-shadow: 0 0 15px currentColor;
             pointer-events: none;
             user-select: none;
-            text-shadow: 0 0 10px currentColor;
         }
 
         /* Flash effect */
@@ -159,11 +171,10 @@
             opacity: 0;
         }
 
-        /* Mobile-specific adjustments */
         @media (max-width: 480px) {
             body {
                 padding: 10px;
-                align-items: flex-start; /* Better scrolling on mobile */
+                align-items: flex-start;
             }
             
             .card {
@@ -197,7 +208,7 @@
         </p>
                
         <div class="photo-placeholder">
-            <img src="us.jpg" alt="A picture of us" onerror="this.style.display='none'; this.parentElement.innerHTML = '📸 Add your photo here';">
+            <img src="us.jpg" alt="A picture of us" onerror="this.style.display='none'; this.parentElement.innerHTML = '📸 Meryeme ❤️';">
         </div>
     
         <div class="signature">
@@ -205,189 +216,210 @@
             Your Husband ❤️
         </div>
         <div>
-            <button class="button" onclick="flowerBomb()">💥 LOVE BOMB 💥</button>
+            <button class="button" onclick="startFireworks()">Click for Surprise 🎆</button>
         </div>
     </div>
 
-    <!-- Container for all flowers -->
-    <div id="flowerContainer" class="flower-container"></div>
+    <!-- Container for fireworks -->
+    <div id="fireworksContainer" class="fireworks-container"></div>
 
     <script>
-        function flowerBomb() {
-            const container = document.getElementById('flowerContainer');
+        const container = document.getElementById('fireworksContainer');
+        
+        // Special messages for Meryeme
+        const messages = [
+            'I LOVE YOU ❤️',
+            'MERYEME 🌸',
+            'JAN 💕',
+            'ZUINA 💖',
+            '💝', '🌸', '🌺', '🌹', '✨'
+        ];
+
+        // Colors for the explosions
+        const colors = [
+            '#ff4d6d', '#ff69b4', '#ff1493', '#ff6b8b', 
+            '#ff8da1', '#ffb3c6', '#d64e6b', '#c44569'
+        ];
+
+        function createRocket(targetX, targetY) {
+            // Start from bottom of screen
+            const startX = Math.random() * window.innerWidth;
+            const startY = window.innerHeight - 50;
             
-            // Clear any existing flowers
-            container.innerHTML = '';
+            // Create rocket
+            const rocket = document.createElement('div');
+            rocket.className = 'rocket';
+            rocket.style.left = startX + 'px';
+            rocket.style.top = startY + 'px';
+            rocket.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            container.appendChild(rocket);
             
+            // Animate rocket going up
+            const startTime = performance.now();
+            const duration = 800 + Math.random() * 400; // 0.8-1.2 seconds
+            
+            function animateRocket(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Ease out for smooth flight
+                const easeOut = 1 - Math.pow(1 - progress, 2);
+                
+                // Current position (move from start to target)
+                const currentX = startX + (targetX - startX) * easeOut;
+                const currentY = startY + (targetY - startY) * easeOut;
+                
+                rocket.style.left = currentX + 'px';
+                rocket.style.top = currentY + 'px';
+                
+                // Trail effect
+                rocket.style.boxShadow = `0 0 ${20 + progress * 30}px gold`;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animateRocket);
+                } else {
+                    // Remove rocket and create explosion
+                    rocket.remove();
+                    createExplosion(targetX, targetY);
+                }
+            }
+            
+            requestAnimationFrame(animateRocket);
+        }
+
+        function createExplosion(x, y) {
             // Flash effect
             const flash = document.createElement('div');
             flash.className = 'explosion-flash';
+            flash.style.left = x + 'px';
+            flash.style.top = y + 'px';
+            flash.style.transform = 'translate(-50%, -50%)';
             document.body.appendChild(flash);
             
-            // Animate flash
             flash.style.transition = 'all 0.3s ease-out';
             flash.style.opacity = '1';
-            flash.style.width = 'min(800px, 150vw)';
-            flash.style.height = 'min(800px, 150vw)';
+            flash.style.width = '200px';
+            flash.style.height = '200px';
             
             setTimeout(() => {
                 flash.style.opacity = '0';
                 setTimeout(() => flash.remove(), 300);
             }, 50);
             
-            // Flower emojis array
-            const flowers = [
-                '🌸', '🌼', '🌺', '🌷', '🌹', '💮', '🏵️', '🌻', 
-                '❤️', '💕', '💗', '💓', '💖', '💘', '💝', '✨',
-                '🌸', '🌸', '🌼', '🌺', '🌹'
-            ];
+            // Number of pieces in this explosion
+            const pieceCount = 30 + Math.floor(Math.random() * 20);
             
-            // Get button position (relative to viewport)
-            const button = document.querySelector('.button');
-            const rect = button.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            
-            // Create 1500 flowers smoothly
-            for (let i = 0; i < 1500; i++) {
+            for (let i = 0; i < pieceCount; i++) {
                 setTimeout(() => {
-                    // Create flower element
-                    const flower = document.createElement('div');
-                    flower.className = 'flower';
+                    const piece = document.createElement('div');
+                    piece.className = 'piece';
                     
-                    // Random flower
-                    flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+                    // Choose message or flower
+                    if (Math.random() > 0.4) { // 60% chance for messages
+                        piece.textContent = messages[Math.floor(Math.random() * 4)]; // Only first 4 are messages
+                    } else {
+                        piece.textContent = messages[4 + Math.floor(Math.random() * (messages.length - 4))]; // Flowers
+                    }
                     
-                    // Start position (slightly randomized from center)
-                    flower.style.left = (centerX + (Math.random() - 0.5) * 30) + 'px';
-                    flower.style.top = (centerY + (Math.random() - 0.5) * 30) + 'px';
+                    // Style the piece
+                    piece.style.left = x + 'px';
+                    piece.style.top = y + 'px';
+                    piece.style.color = colors[Math.floor(Math.random() * colors.length)];
+                    piece.style.fontSize = (20 + Math.random() * 30) + 'px';
+                    piece.style.fontWeight = 'bold';
+                    piece.style.textShadow = `0 0 20px ${piece.style.color}`;
                     
-                    // Random size (responsive)
-                    const size = 20 + Math.random() * 40;
-                    flower.style.fontSize = size + 'px';
+                    container.appendChild(piece);
                     
-                    // Random color
-                    const hue = 330 + Math.random() * 30;
-                    flower.style.color = `hsl(${hue}, 80%, 65%)`;
-                    flower.style.textShadow = `0 0 15px hsl(${hue}, 80%, 75%)`;
-                    
-                    // Add to container
-                    container.appendChild(flower);
-                    
-                    // Calculate target position
+                    // Random direction
                     const angle = Math.random() * Math.PI * 2;
-                    const distance = 200 + Math.random() * 600;
-                    const targetX = centerX + Math.cos(angle) * distance;
-                    const targetY = centerY + Math.sin(angle) * distance;
+                    const distance = 100 + Math.random() * 300;
+                    const targetX = x + Math.cos(angle) * distance;
+                    const targetY = y + Math.sin(angle) * distance;
                     
                     // Random rotation
-                    const rotation = Math.random() * 1080;
+                    const rotation = (Math.random() - 0.5) * 720;
                     
-                    // Smooth animation
+                    // Animate explosion piece
                     const startTime = performance.now();
-                    const duration = 2000 + Math.random() * 2000;
+                    const duration = 1500 + Math.random() * 1000;
                     
-                    function animate(currentTime) {
+                    function animatePiece(currentTime) {
                         const elapsed = currentTime - startTime;
                         const progress = Math.min(elapsed / duration, 1);
                         
-                        // Easing function
+                        // Easing for explosion (fast then slow)
                         const easeOut = 1 - Math.pow(1 - progress, 3);
                         
-                        // Calculate current position
-                        const currentX = centerX + (targetX - centerX) * easeOut;
-                        const currentY = centerY + (targetY - centerY) * easeOut;
+                        // Current position
+                        const currentX = x + (targetX - x) * easeOut;
+                        const currentY = y + (targetY - y) * easeOut;
                         const currentRotation = rotation * easeOut;
                         const opacity = 1 - easeOut * 0.7;
-                        const scale = 1 + easeOut * 0.2;
                         
-                        // Apply transform
-                        flower.style.transform = `translate(${currentX - centerX}px, ${currentY - centerY}px) rotate(${currentRotation}deg) scale(${scale})`;
-                        flower.style.opacity = opacity;
+                        piece.style.transform = `translate(${currentX - x}px, ${currentY - y}px) rotate(${currentRotation}deg)`;
+                        piece.style.opacity = opacity;
                         
                         if (progress < 1) {
-                            requestAnimationFrame(animate);
+                            requestAnimationFrame(animatePiece);
                         } else {
-                            setTimeout(() => {
-                                if (flower.parentNode) {
-                                    flower.remove();
-                                }
-                            }, 100);
+                            setTimeout(() => piece.remove(), 100);
                         }
                     }
                     
-                    requestAnimationFrame(animate);
+                    requestAnimationFrame(animatePiece);
                     
-                }, i * 2); // Stagger for smooth wave
+                }, i * 30); // Stagger pieces
             }
-            
-            // Second wave (hearts)
-            setTimeout(() => {
-                for (let i = 0; i < 500; i++) {
-                    setTimeout(() => {
-                        const flower = document.createElement('div');
-                        flower.className = 'flower';
-                        flower.textContent = '❤️';
-                        
-                        flower.style.left = (centerX + (Math.random() - 0.5) * 40) + 'px';
-                        flower.style.top = (centerY + (Math.random() - 0.5) * 40) + 'px';
-                        
-                        const size = 30 + Math.random() * 50;
-                        flower.style.fontSize = size + 'px';
-                        flower.style.color = '#ff1493';
-                        flower.style.textShadow = '0 0 20px #ff69b4';
-                        
-                        container.appendChild(flower);
-                        
-                        const angle = Math.random() * Math.PI * 2;
-                        const distance = 300 + Math.random() * 500;
-                        const targetX = centerX + Math.cos(angle) * distance;
-                        const targetY = centerY + Math.sin(angle) * distance;
-                        const rotation = Math.random() * 720;
-                        
-                        const startTime = performance.now();
-                        const duration = 2500 + Math.random() * 2000;
-                        
-                        function animate(currentTime) {
-                            const elapsed = currentTime - startTime;
-                            const progress = Math.min(elapsed / duration, 1);
-                            const easeOut = 1 - Math.pow(1 - progress, 2);
-                            
-                            const currentX = centerX + (targetX - centerX) * easeOut;
-                            const currentY = centerY + (targetY - centerY) * easeOut;
-                            const currentRotation = rotation * easeOut;
-                            const opacity = 1 - easeOut * 0.5;
-                            
-                            flower.style.transform = `translate(${currentX - centerX}px, ${currentY - centerY}px) rotate(${currentRotation}deg)`;
-                            flower.style.opacity = opacity;
-                            
-                            if (progress < 1) {
-                                requestAnimationFrame(animate);
-                            } else {
-                                setTimeout(() => flower.remove(), 100);
-                            }
-                        }
-                        
-                        requestAnimationFrame(animate);
-                        
-                    }, i * 2);
-                }
-            }, 1000);
+        }
+
+        function startFireworks() {
+            // Clear any existing fireworks
+            container.innerHTML = '';
             
             // Button animation
+            const button = document.querySelector('.button');
             button.style.transform = 'scale(0.8)';
             setTimeout(() => {
                 button.style.transform = 'scale(1)';
             }, 200);
-        }
-
-        // Handle touch events for mobile
-        document.addEventListener('touchstart', function(e) {
-            // Prevent double-tap zoom on button
-            if (e.target.classList.contains('button')) {
-                e.preventDefault();
+            
+            // Create multiple fireworks at different positions
+            const fireworkCount = 12; // 12 fireworks!
+            
+            for (let i = 0; i < fireworkCount; i++) {
+                setTimeout(() => {
+                    // Random target position for explosion
+                    const targetX = Math.random() * window.innerWidth;
+                    const targetY = Math.random() * window.innerHeight * 0.7; // Upper 70% of screen
+                    
+                    createRocket(targetX, targetY);
+                    
+                }, i * 400); // Launch every 0.4 seconds
             }
-        }, { passive: false });
+            
+            // Second wave of fireworks
+            setTimeout(() => {
+                for (let i = 0; i < 8; i++) {
+                    setTimeout(() => {
+                        const targetX = Math.random() * window.innerWidth;
+                        const targetY = Math.random() * window.innerHeight * 0.7;
+                        createRocket(targetX, targetY);
+                    }, i * 300);
+                }
+            }, 2000);
+            
+            // Third wave with more messages!
+            setTimeout(() => {
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(() => {
+                        const targetX = Math.random() * window.innerWidth;
+                        const targetY = Math.random() * window.innerHeight * 0.6;
+                        createRocket(targetX, targetY);
+                    }, i * 250);
+                }
+            }, 4000);
+        }
     </script>
 </body>
 </html>
