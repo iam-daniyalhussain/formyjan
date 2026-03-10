@@ -137,12 +137,12 @@
         </div>
         <div>
             <!-- Button now triggers falling flowers instead of an alert -->
-            <button class="button" onclick="createFlowers(100)">Click for a Surprise</button>
+            <button class="button" onclick="createFlowers(200)">Click for a Surprise</button>
         </div>
     </div>
 
     <script>
-        function createFlowers(count = 100) {
+        function createFlowers(count = 200) {
             for (let i = 0; i < count; i++) {
                 const flower = document.createElement('div');
                 flower.classList.add('flower');
@@ -152,10 +152,10 @@
                 flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
                 
                 // Random horizontal position
-                flower.style.left = Math.random() * 100 + '%';
+                flower.style.left = Math.random() * 200 + '%';
                 
                 // Random duration between 3 and 7 seconds
-                const duration = 3 + Math.random() * 4;
+                const duration = 3 + Math.random() * 5;
                 flower.style.animationDuration = duration + 's';
                 
                 // Random delay so they don't all start at once
@@ -179,4 +179,5 @@
     </script>
 </body>
 </html>
+
 
