@@ -2,57 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>A Special Message for You ✨</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
             min-height: 100vh;
+            min-height: 100dvh; /* Better for mobile */
             display: flex;
             justify-content: center;
             align-items: center;
-            text-align: center;
-            overflow: hidden; /* Prevents scrollbars during explosion */
+            overflow-y: auto; /* Enable scrolling */
+            overflow-x: hidden;
+            padding: 20px;
         }
+
         .card {
             background-color: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 20px;
+            padding: 30px 20px;
+            border-radius: 30px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             max-width: 600px;
-            margin: 20px;
+            width: 100%;
+            margin: 20px auto;
             border: 2px solid white;
             position: relative;
             z-index: 10;
             backdrop-filter: blur(5px);
         }
+
         h1 {
             color: #d64e6b;
-            font-size: 3em;
+            font-size: clamp(2em, 8vw, 3em);
             margin-bottom: 10px;
+            word-break: break-word;
         }
+
         p {
             color: #555;
-            font-size: 1.3em;
+            font-size: clamp(1.1em, 4vw, 1.3em);
             line-height: 1.6;
             margin: 20px 0;
+            padding: 0 10px;
         }
+
         .heart {
             color: #ff4d6d;
-            font-size: 4em;
-            margin: 20px 0;
+            font-size: clamp(3em, 10vw, 4em);
+            margin: 15px 0;
             animation: heartbeat 1.5s ease-in-out infinite;
         }
+
         @keyframes heartbeat {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
         }
+
         .photo-placeholder {
-            width: 200px;
-            height: 200px;
+            width: min(200px, 60%);
+            height: min(200px, 60%);
             border-radius: 50%;
             background-color: #ffc8dd;
             margin: 20px auto;
@@ -62,43 +77,50 @@
             border: 4px solid white;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             overflow: hidden;
+            aspect-ratio: 1/1;
         }
+
         .photo-placeholder img {
-            max-width: 100%;
-            min-height: 100%;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
         }
+
         .signature {
             font-style: italic;
             color: #777;
             margin-top: 30px;
-            font-size: 1.1em;
+            font-size: clamp(1em, 4vw, 1.1em);
         }
+
         .button {
             display: inline-block;
             background-color: #d64e6b;
             color: white;
-            padding: 18px 45px;
+            padding: 16px 35px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
-            margin-top: 20px;
+            margin: 20px 0 10px;
             border: none;
             cursor: pointer;
-            font-size: 1.4em;
+            font-size: clamp(1.2em, 5vw, 1.4em);
             position: relative;
             box-shadow: 0 4px 15px rgba(214, 78, 107, 0.4);
             transition: transform 0.2s, box-shadow 0.2s;
+            -webkit-tap-highlight-color: transparent; /* Removes tap highlight on mobile */
         }
+
         .button:hover {
             transform: scale(1.05);
             box-shadow: 0 6px 20px rgba(214, 78, 107, 0.6);
         }
+
         .button:active {
             transform: scale(0.95);
         }
 
-        /* Flower container for better performance */
+        /* Flower container - fixed but doesn't block scrolling */
         .flower-container {
             position: fixed;
             top: 0;
@@ -107,18 +129,22 @@
             height: 100%;
             pointer-events: none;
             z-index: 9999;
+            overflow: visible;
         }
 
         /* Individual flower */
         .flower {
             position: absolute;
             will-change: transform, opacity;
-            transform: translateZ(0); /* Hardware acceleration */
+            transform: translateZ(0);
             backface-visibility: hidden;
             perspective: 1000px;
+            pointer-events: none;
+            user-select: none;
+            text-shadow: 0 0 10px currentColor;
         }
 
-        /* Explosion effect */
+        /* Flash effect */
         .explosion-flash {
             position: fixed;
             top: 50%;
@@ -132,6 +158,25 @@
             pointer-events: none;
             opacity: 0;
         }
+
+        /* Mobile-specific adjustments */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                align-items: flex-start; /* Better scrolling on mobile */
+            }
+            
+            .card {
+                padding: 25px 15px;
+                margin: 10px auto;
+            }
+            
+            .button {
+                padding: 14px 25px;
+                width: auto;
+                min-width: 200px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -139,7 +184,9 @@
         <div class="heart">❤️</div>
         <h1>For My Love</h1>
         
-        East to the west, My Jaan is the bestest 
+        <p style="font-size: 1.2em; color: #d64e6b; font-weight: bold;">
+            East to the west, My Jaan is the bestest 
+        </p>
 
         <p>
             Hi My Zuina Wife, <br><br>
@@ -150,7 +197,7 @@
         </p>
                
         <div class="photo-placeholder">
-            <img src="us.jpg" alt="A picture of us" onerror="this.style.display='none'">
+            <img src="us.jpg" alt="A picture of us" onerror="this.style.display='none'; this.parentElement.innerHTML = '📸 Add your photo here';">
         </div>
     
         <div class="signature">
@@ -162,7 +209,7 @@
         </div>
     </div>
 
-    <!-- Container for all flowers (better performance) -->
+    <!-- Container for all flowers -->
     <div id="flowerContainer" class="flower-container"></div>
 
     <script>
@@ -180,8 +227,8 @@
             // Animate flash
             flash.style.transition = 'all 0.3s ease-out';
             flash.style.opacity = '1';
-            flash.style.width = '800px';
-            flash.style.height = '800px';
+            flash.style.width = 'min(800px, 150vw)';
+            flash.style.height = 'min(800px, 150vw)';
             
             setTimeout(() => {
                 flash.style.opacity = '0';
@@ -195,7 +242,7 @@
                 '🌸', '🌸', '🌼', '🌺', '🌹'
             ];
             
-            // Get center position
+            // Get button position (relative to viewport)
             const button = document.querySelector('.button');
             const rect = button.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
@@ -212,55 +259,55 @@
                     flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
                     
                     // Start position (slightly randomized from center)
-                    flower.style.left = (centerX + (Math.random() - 0.5) * 20) + 'px';
-                    flower.style.top = (centerY + (Math.random() - 0.5) * 20) + 'px';
+                    flower.style.left = (centerX + (Math.random() - 0.5) * 30) + 'px';
+                    flower.style.top = (centerY + (Math.random() - 0.5) * 30) + 'px';
                     
-                    // Random size
+                    // Random size (responsive)
                     const size = 20 + Math.random() * 40;
                     flower.style.fontSize = size + 'px';
                     
-                    // Random color variation
+                    // Random color
                     const hue = 330 + Math.random() * 30;
                     flower.style.color = `hsl(${hue}, 80%, 65%)`;
-                    flower.style.textShadow = `0 0 10px hsl(${hue}, 80%, 75%)`;
+                    flower.style.textShadow = `0 0 15px hsl(${hue}, 80%, 75%)`;
                     
                     // Add to container
                     container.appendChild(flower);
                     
-                    // Calculate target position (random direction, random distance)
+                    // Calculate target position
                     const angle = Math.random() * Math.PI * 2;
-                    const distance = 200 + Math.random() * 800;
+                    const distance = 200 + Math.random() * 600;
                     const targetX = centerX + Math.cos(angle) * distance;
                     const targetY = centerY + Math.sin(angle) * distance;
                     
                     // Random rotation
                     const rotation = Math.random() * 1080;
                     
-                    // Smooth animation using requestAnimationFrame
+                    // Smooth animation
                     const startTime = performance.now();
-                    const duration = 2000 + Math.random() * 2000; // 2-4 seconds
+                    const duration = 2000 + Math.random() * 2000;
                     
                     function animate(currentTime) {
                         const elapsed = currentTime - startTime;
                         const progress = Math.min(elapsed / duration, 1);
                         
-                        // Easing function for smooth deceleration
+                        // Easing function
                         const easeOut = 1 - Math.pow(1 - progress, 3);
                         
                         // Calculate current position
                         const currentX = centerX + (targetX - centerX) * easeOut;
                         const currentY = centerY + (targetY - centerY) * easeOut;
                         const currentRotation = rotation * easeOut;
-                        const opacity = 1 - easeOut * 0.7; // Fade out at the end
+                        const opacity = 1 - easeOut * 0.7;
+                        const scale = 1 + easeOut * 0.2;
                         
                         // Apply transform
-                        flower.style.transform = `translate(${currentX - centerX}px, ${currentY - centerY}px) rotate(${currentRotation}deg) scale(${1 - easeOut * 0.3})`;
+                        flower.style.transform = `translate(${currentX - centerX}px, ${currentY - centerY}px) rotate(${currentRotation}deg) scale(${scale})`;
                         flower.style.opacity = opacity;
                         
                         if (progress < 1) {
                             requestAnimationFrame(animate);
                         } else {
-                            // Remove flower after animation
                             setTimeout(() => {
                                 if (flower.parentNode) {
                                     flower.remove();
@@ -271,7 +318,7 @@
                     
                     requestAnimationFrame(animate);
                     
-                }, i * 1.5); // Stagger for smooth wave effect
+                }, i * 2); // Stagger for smooth wave
             }
             
             // Second wave (hearts)
@@ -282,18 +329,18 @@
                         flower.className = 'flower';
                         flower.textContent = '❤️';
                         
-                        flower.style.left = (centerX + (Math.random() - 0.5) * 30) + 'px';
-                        flower.style.top = (centerY + (Math.random() - 0.5) * 30) + 'px';
+                        flower.style.left = (centerX + (Math.random() - 0.5) * 40) + 'px';
+                        flower.style.top = (centerY + (Math.random() - 0.5) * 40) + 'px';
                         
                         const size = 30 + Math.random() * 50;
                         flower.style.fontSize = size + 'px';
                         flower.style.color = '#ff1493';
-                        flower.style.textShadow = '0 0 15px #ff69b4';
+                        flower.style.textShadow = '0 0 20px #ff69b4';
                         
                         container.appendChild(flower);
                         
                         const angle = Math.random() * Math.PI * 2;
-                        const distance = 300 + Math.random() * 700;
+                        const distance = 300 + Math.random() * 500;
                         const targetX = centerX + Math.cos(angle) * distance;
                         const targetY = centerY + Math.sin(angle) * distance;
                         const rotation = Math.random() * 720;
@@ -304,12 +351,12 @@
                         function animate(currentTime) {
                             const elapsed = currentTime - startTime;
                             const progress = Math.min(elapsed / duration, 1);
-                            const easeOut = 1 - Math.pow(1 - progress, 3);
+                            const easeOut = 1 - Math.pow(1 - progress, 2);
                             
                             const currentX = centerX + (targetX - centerX) * easeOut;
                             const currentY = centerY + (targetY - centerY) * easeOut;
                             const currentRotation = rotation * easeOut;
-                            const opacity = 1 - easeOut * 0.6;
+                            const opacity = 1 - easeOut * 0.5;
                             
                             flower.style.transform = `translate(${currentX - centerX}px, ${currentY - centerY}px) rotate(${currentRotation}deg)`;
                             flower.style.opacity = opacity;
@@ -323,16 +370,24 @@
                         
                         requestAnimationFrame(animate);
                         
-                    }, i * 1);
+                    }, i * 2);
                 }
-            }, 800);
+            }, 1000);
             
             // Button animation
             button.style.transform = 'scale(0.8)';
             setTimeout(() => {
                 button.style.transform = 'scale(1)';
-            }, 150);
+            }, 200);
         }
+
+        // Handle touch events for mobile
+        document.addEventListener('touchstart', function(e) {
+            // Prevent double-tap zoom on button
+            if (e.target.classList.contains('button')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
     </script>
 </body>
 </html>
