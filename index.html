@@ -74,41 +74,75 @@
             display: inline-block;
             background-color: #d64e6b;
             color: white;
-            padding: 12px 30px;
+            padding: 15px 40px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
             margin-top: 20px;
             border: none;
             cursor: pointer;
-            transition: background-color 0.3s;
-            font-size: 1.2em;
+            transition: all 0.3s;
+            font-size: 1.3em;
+            position: relative;
+            overflow: visible;
+            box-shadow: 0 4px 15px rgba(214, 78, 107, 0.4);
         }
         .button:hover {
             background-color: #b23b54;
-            transform: scale(1.05);
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(214, 78, 107, 0.6);
+        }
+        .button:active {
+            transform: scale(0.95);
         }
 
-        /* Falling flowers style */
-        .flower {
+        /* Explosion flower style */
+        .explosion-flower {
             position: fixed;
-            top: -10%;
-            color: #ffb3c6;
+            color: #ff4d6d;
             font-size: 2rem;
             user-select: none;
             pointer-events: none;
             z-index: 9999;
-            animation: fall linear forwards;
-            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+            animation: explode 3s ease-out forwards;
+            text-shadow: 0 0 10px rgba(255, 77, 109, 0.8);
         }
 
-        @keyframes fall {
+        @keyframes explode {
             0% {
-                transform: translateY(0) rotate(0deg);
+                transform: translate(0, 0) scale(1) rotate(0deg);
                 opacity: 1;
             }
             100% {
-                transform: translateY(100vh) rotate(720deg);
+                transform: translate(var(--x), var(--y)) scale(0) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Initial blast effect */
+        .blast-wave {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            z-index: 9998;
+            animation: blast 0.5s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes blast {
+            0% {
+                width: 0px;
+                height: 0px;
+                opacity: 1;
+            }
+            100% {
+                width: 800px;
+                height: 800px;
                 opacity: 0;
             }
         }
@@ -138,40 +172,69 @@
             Your Husband ❤️
         </div>
         <div>
-            <!-- 300+ flowers on click! -->
-            <button class="button" onclick="createFlowers(350)">Click for a Surprise 🌸</button>
+            <!-- FLOWER BOMB BUTTON -->
+            <button class="button" onclick="flowerBomb()">💥 LOVE BOMB 💥</button>
         </div>
     </div>
 
     <script>
-        function createFlowers(count = 350) {
-            // Array of beautiful flower emojis and hearts
-            const flowers = ['🌸', '🌼', '🌺', '🌸', '🌸', '🌷', '🌹', '💮', '🏵️', '🌻', '🌸', '🌸', '❤️', '💕'];
+        function flowerBomb() {
+            // Create blast wave effect
+            const blast = document.createElement('div');
+            blast.classList.add('blast-wave');
+            document.body.appendChild(blast);
             
-            for (let i = 0; i < count; i++) {
+            // Remove blast wave after animation
+            setTimeout(() => {
+                blast.remove();
+            }, 500);
+
+            // FLOWER TYPES - LOTS OF VARIETY!
+            const flowers = [
+                '🌸', '🌼', '🌺', '🌷', '🌹', '💮', '🏵️', '🌻', 
+                '❤️', '💕', '💗', '💓', '💖', '💘', '💝', '🌼',
+                '🌸', '🌸', '🌸', '🌺', '🌹', '🌷', '✨', '⭐'
+            ];
+            
+            // EXPLOSION SIZE: 1200 FLOWERS!
+            const totalFlowers = 1200;
+            
+            // Get button position for explosion center
+            const button = document.querySelector('.button');
+            const rect = button.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Create all flowers with slight delay for build-up effect
+            for (let i = 0; i < totalFlowers; i++) {
                 setTimeout(() => {
                     const flower = document.createElement('div');
-                    flower.classList.add('flower');
+                    flower.classList.add('explosion-flower');
                     
-                    // Random flower emoji
+                    // Random flower
                     flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
                     
-                    // Random horizontal position (0% to 100%)
-                    flower.style.left = Math.random() * 100 + '%';
+                    // Position at explosion center
+                    flower.style.left = centerX + 'px';
+                    flower.style.top = centerY + 'px';
                     
-                    // SLOWER animation: between 8 and 12 seconds
-                    const duration = 8 + Math.random() * 4;  // 8-12 seconds
-                    flower.style.animationDuration = duration + 's';
+                    // Random direction and distance
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = 200 + Math.random() * 800; // 200-1000px
+                    const xDistance = Math.cos(angle) * distance;
+                    const yDistance = Math.sin(angle) * distance;
                     
-                    // Random delay so they don't all start at once
-                    flower.style.animationDelay = Math.random() * 3 + 's';
+                    // Set CSS variables for animation
+                    flower.style.setProperty('--x', xDistance + 'px');
+                    flower.style.setProperty('--y', yDistance + 'px');
                     
-                    // Random size between 1rem and 4rem
+                    // Random size (1-4rem)
                     const size = 1 + Math.random() * 3;
                     flower.style.fontSize = size + 'rem';
                     
-                    // Random rotation start
-                    flower.style.transform = `rotate(${Math.random() * 60 - 30}deg)`;
+                    // Random color variations
+                    const hue = Math.random() * 20 + 340; // Pink/red range
+                    flower.style.color = `hsl(${hue}, 80%, 70%)`;
                     
                     // Add to page
                     document.body.appendChild(flower);
@@ -180,9 +243,75 @@
                     flower.addEventListener('animationend', () => {
                         flower.remove();
                     });
-                }, i * 2); // Small delay between each flower for smoother effect
+                    
+                }, i * 2); // Stagger for wave effect
             }
+            
+            // Second wave: burst from center again after 0.3 seconds
+            setTimeout(() => {
+                for (let i = 0; i < 400; i++) {
+                    setTimeout(() => {
+                        const flower = document.createElement('div');
+                        flower.classList.add('explosion-flower');
+                        flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+                        flower.style.left = centerX + 'px';
+                        flower.style.top = centerY + 'px';
+                        
+                        const angle = Math.random() * Math.PI * 2;
+                        const distance = 300 + Math.random() * 600;
+                        flower.style.setProperty('--x', Math.cos(angle) * distance + 'px');
+                        flower.style.setProperty('--y', Math.sin(angle) * distance + 'px');
+                        
+                        flower.style.fontSize = (1 + Math.random() * 3) + 'rem';
+                        document.body.appendChild(flower);
+                        
+                        flower.addEventListener('animationend', () => {
+                            flower.remove();
+                        });
+                    }, i * 3);
+                }
+            }, 300);
+            
+            // Third wave: final burst after 0.6 seconds
+            setTimeout(() => {
+                for (let i = 0; i < 200; i++) {
+                    setTimeout(() => {
+                        const flower = document.createElement('div');
+                        flower.classList.add('explosion-flower');
+                        flower.textContent = '❤️';
+                        flower.style.left = centerX + 'px';
+                        flower.style.top = centerY + 'px';
+                        
+                        const angle = Math.random() * Math.PI * 2;
+                        const distance = 100 + Math.random() * 400;
+                        flower.style.setProperty('--x', Math.cos(angle) * distance + 'px');
+                        flower.style.setProperty('--y', Math.sin(angle) * distance + 'px');
+                        
+                        flower.style.fontSize = (2 + Math.random() * 2) + 'rem';
+                        flower.style.color = '#ff1493';
+                        document.body.appendChild(flower);
+                        
+                        flower.addEventListener('animationend', () => {
+                            flower.remove();
+                        });
+                    }, i * 2);
+                }
+            }, 600);
+            
+            // Button shake effect
+            button.style.animation = 'shake 0.5s ease-in-out';
+            setTimeout(() => {
+                button.style.animation = '';
+            }, 500);
         }
     </script>
+
+    <style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+    </style>
 </body>
 </html>
