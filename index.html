@@ -1,54 +1,45 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A Special Message ✨</title>
+<title>Special Message ✨</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
-font-family:Arial,sans-serif;
-background:radial-gradient(circle at bottom,#0b1d3a 0%,#020111 70%);
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:flex-start;
-overflow-y:auto;
-color:white;
-position:relative;
-padding:20px 0;
+  font-family:Arial,sans-serif;
+  background:radial-gradient(circle at bottom,#0b1d3a 0%,#020111 70%);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  overflow-y:auto;
+  color:white;
+  position:relative;
+  padding:20px 0;
 }
-
 /* stars */
 .star{position:absolute;width:2px;height:2px;background:white;border-radius:50%;opacity:0.8;animation:twinkle 3s infinite ease-in-out;}
 @keyframes twinkle{0%{opacity:0.2;}50%{opacity:1;}100%{opacity:0.2;}}
-
 /* shooting stars */
 .shooting-star{position:absolute;width:2px;height:2px;background:white;box-shadow:0 0 6px white;}
 @keyframes shoot{0%{transform:translate(0,0);opacity:1;}100%{transform:translate(-600px,300px);opacity:0;}}
-
 /* card */
 .card{background:rgba(255,255,255,0.9);color:#333;padding:30px;border-radius:25px;text-align:center;max-width:500px;box-shadow:0 10px 30px rgba(0,0,0,0.5);z-index:1;margin:40px auto;position:relative;}
 h1{color:#ff4d6d;margin-bottom:10px;}
 p{margin:15px 0;line-height:1.6;}
-
 /* photo */
 .photo{width:160px;height:160px;border-radius:50%;margin:20px auto;position:relative;}
 .photo img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
-
-/* pulsing heart */
 .photo::after{content:"💖";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(1);font-size:120px;opacity:0.15;animation:pulseHeart 2.5s infinite;}
 @keyframes pulseHeart{0%{transform:translate(-50%,-50%) scale(0.9);opacity:0.15;}50%{transform:translate(-50%,-50%) scale(1.1);opacity:0.3;}100%{transform:translate(-50%,-50%) scale(0.9);opacity:0.15;}}
-
-/* glowing ring button */
+/* glowing button */
 .button{background:#ff4d6d;color:white;border:none;padding:14px 30px;font-size:18px;border-radius:40px;cursor:pointer;margin-top:20px;position:relative;z-index:2;}
 .button::before{content:"";position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;border-radius:50px;border:2px solid #ff6b8b;animation:ring 2s infinite;}
 @keyframes ring{0%{transform:scale(1);opacity:0.7;}70%{transform:scale(1.3);opacity:0;}100%{opacity:0;}}
-
 /* fireworks container in front of card */
-.fireworks-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:20;} </style>
-
+.fireworks-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:20;}
+</style>
 </head>
 <body>
 
@@ -69,23 +60,22 @@ I love you more than anything ✨</p>
 <script>
 // stars
 for(let i=0;i<120;i++){
-const s=document.createElement("div");
-s.className="star";
-s.style.left=Math.random()*window.innerWidth+"px";
-s.style.top=Math.random()*window.innerHeight+"px";
-s.style.animationDelay=Math.random()*3+"s";
-document.body.appendChild(s);
+  const s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*window.innerWidth+"px";
+  s.style.top=Math.random()*window.innerHeight+"px";
+  s.style.animationDelay=Math.random()*3+"s";
+  document.body.appendChild(s);
 }
-
 // shooting stars
 function shootingStar(){
-const star=document.createElement("div");
-star.className="shooting-star";
-star.style.left=Math.random()*window.innerWidth+"px";
-star.style.top=Math.random()*window.innerHeight*0.4+"px";
-star.style.animation="shoot 1.5s linear";
-document.body.appendChild(star);
-setTimeout(()=>star.remove(),1500);
+  const star=document.createElement("div");
+  star.className="shooting-star";
+  star.style.left=Math.random()*window.innerWidth+"px";
+  star.style.top=Math.random()*window.innerHeight*0.4+"px";
+  star.style.animation="shoot 1.5s linear";
+  document.body.appendChild(star);
+  setTimeout(()=>star.remove(),1500);
 }
 setInterval(shootingStar,4000);
 
@@ -93,105 +83,96 @@ setInterval(shootingStar,4000);
 const container=document.getElementById("fireworksContainer");
 const sound=document.getElementById("boom");
 const flowers=["🌸","🌺","🌹"];
-
-// firework particles batch
 let particles=[];
 
 function createRocket(tx,ty){
-const sx=Math.random()*window.innerWidth;
-const sy=window.innerHeight;
-let rocket={x:sx,y:sy,tx:tx,ty:ty};
-particles.push(rocket);
+  const sx=Math.random()*window.innerWidth;
+  const sy=window.innerHeight;
+  particles.push({x:sx,y:sy,tx:tx,ty:ty,trail:true});
 }
 
-// explosion function
 function explode(x,y){
-for(let i=0;i<40;i++){
-const a=Math.random()*2*Math.PI;
-const d=160+Math.random()*150;
-particles.push({x:x,y:y,tx:x+Math.cos(a)*d,ty:y+Math.sin(a)*d,char:flowers[Math.floor(Math.random()*flowers.length)],size:20+Math.random()*20});
-}
-sound.currentTime=0;
-sound.play();
+  for(let i=0;i<20;i++){ // reduced particles for smoothness
+    const a=Math.random()*2*Math.PI;
+    const d=100+Math.random()*100;
+    particles.push({x:x,y:y,tx:x+Math.cos(a)*d,ty:y+Math.sin(a)*d,char:flowers[Math.floor(Math.random()*flowers.length)],size:18+Math.random()*12});
+  }
+  sound.currentTime=0;
+  sound.play();
 }
 
-// animate all particles
 function animate(){
-container.innerHTML="";
-for(let i=0;i<particles.length;i++){
-let p=particles[i];
-if(p.char){ // explosion piece
-let dx=p.tx-p.x;
-let dy=p.ty-p.y;
-p.x+=dx*0.05;
-p.y+=dy*0.05;
-p.size*=0.97;
-if(p.size<1){particles.splice(i,1);i--;continue;}
-const el=document.createElement("div");
-el.textContent=p.char;
-el.style.position="absolute";
-el.style.left=p.x+"px";
-el.style.top=p.y+"px";
-el.style.fontSize=p.size+"px";
-el.style.textShadow="0 0 20px #ff4d6d,0 0 30px #ff85a2";
-container.appendChild(el);
-}else{ // rocket
-let dx=p.tx-p.x;
-let dy=p.ty-p.y;
-p.x+=dx*0.07;
-p.y+=dy*0.07;
-const el=document.createElement("div");
-el.textContent="✨";
-el.style.position="absolute";
-el.style.left=p.x+"px";
-el.style.top=p.y+"px";
-el.style.fontSize="16px";
-el.style.textShadow="0 0 12px #fff,0 0 20px #ffb6c1";
-container.appendChild(el);
-if(Math.abs(dx)<1 && Math.abs(dy)<1){
-explode(p.tx,p.ty);
-particles.splice(i,1);i--;
-}
-}
-}
-requestAnimationFrame(animate);
+  container.innerHTML="";
+  for(let i=0;i<particles.length;i++){
+    let p=particles[i];
+    if(p.char){ // explosion piece
+      p.x += (p.tx-p.x)*0.07;
+      p.y += (p.ty-p.y)*0.07;
+      p.size *= 0.95;
+      if(p.size<1){particles.splice(i,1);i--;continue;}
+      const el=document.createElement("div");
+      el.textContent=p.char;
+      el.style.position="absolute";
+      el.style.left=p.x+"px";
+      el.style.top=p.y+"px";
+      el.style.fontSize=p.size+"px";
+      el.style.textShadow="0 0 20px #ff4d6d,0 0 30px #ff85a2";
+      container.appendChild(el);
+    } else { // rocket
+      p.x += (p.tx-p.x)*0.08;
+      p.y += (p.ty-p.y)*0.08;
+      const el=document.createElement("div");
+      el.textContent="✨";
+      el.style.position="absolute";
+      el.style.left=p.x+"px";
+      el.style.top=p.y+"px";
+      el.style.fontSize="16px";
+      el.style.textShadow="0 0 12px #fff,0 0 20px #ffb6c1";
+      container.appendChild(el);
+      if(Math.abs(p.tx-p.x)<1 && Math.abs(p.ty-p.y)<1){
+        explode(p.tx,p.ty);
+        particles.splice(i,1);i--;
+      }
+    }
+  }
+  requestAnimationFrame(animate);
 }
 animate();
 
 // MERYEME finale
 function showName(){
-const text="MERYEME";
-const cx=window.innerWidth/2;
-const cy=window.innerHeight*0.35;
-for(let i=0;i<text.length;i++){
-setTimeout(()=>{
-const l=document.createElement("div");
-l.textContent=text[i];
-l.style.position="absolute";
-l.style.left=cx+"px";
-l.style.top=cy+"px";
-l.style.fontSize="100px";
-l.style.fontWeight="bold";
-l.style.color="#ff4d6d";
-l.style.textShadow="0 0 35px #ff85a2,0 0 50px #ffb6c1";
-container.appendChild(l);
-},i*200);
-}
+  const text="MERYEME";
+  const cx=window.innerWidth/2;
+  const cy=window.innerHeight*0.35;
+  for(let i=0;i<text.length;i++){
+    setTimeout(()=>{
+      const l=document.createElement("div");
+      l.textContent=text[i];
+      l.style.position="absolute";
+      l.style.left=cx+"px";
+      l.style.top=cy+"px";
+      l.style.fontSize="80px";
+      l.style.fontWeight="bold";
+      l.style.color="#ff4d6d";
+      l.style.textShadow="0 0 25px #ff85a2,0 0 40px #ffb6c1";
+      container.appendChild(l);
+    },i*200);
+  }
 }
 
-// start fireworks one by one
+// start fireworks
 function startFireworks(){
-particles=[];
-let count=0;
-function launchNext(){
-if(count>=10){setTimeout(showName,1200);return;}
-createRocket(Math.random()*window.innerWidth,Math.random()*window.innerHeight*0.6);
-count++;
-setTimeout(launchNext,1000);
-}
-launchNext();
+  sound.play(); // trigger sound allowed by user click
+  particles=[];
+  let count=0;
+  function launchNext(){
+    if(count>=8){setTimeout(showName,1200);return;}
+    createRocket(Math.random()*window.innerWidth,Math.random()*window.innerHeight*0.6);
+    count++;
+    setTimeout(launchNext,1000);
+  }
+  launchNext();
 }
 </script>
-
 </body>
 </html>
