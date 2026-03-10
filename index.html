@@ -137,12 +137,12 @@
         </div>
         <div>
             <!-- Button now triggers falling flowers instead of an alert -->
-            <button class="button" onclick="createFlowers(30)">Click for a Surprise</button>
+            <button class="button" onclick="createFlowers(100)">Click for a Surprise</button>
         </div>
     </div>
 
     <script>
-        function createFlowers(count = 30) {
+        function createFlowers(count = 100) {
             for (let i = 0; i < count; i++) {
                 const flower = document.createElement('div');
                 flower.classList.add('flower');
@@ -179,3 +179,4 @@
     </script>
 </body>
 </html>
+
