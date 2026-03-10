@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -55,7 +56,6 @@ I love you more than anything ✨</p>
 </div>
 
 <div id="fireworksContainer" class="fireworks-container"></div>
-<audio id="boom" src="https://cdn.pixabay.com/audio/2022/03/15/audio_2e3c4b3e9b.mp3"></audio>
 
 <script>
 // stars
@@ -81,9 +81,30 @@ setInterval(shootingStar,4000);
 
 // fireworks
 const container=document.getElementById("fireworksContainer");
-const sound=document.getElementById("boom");
 const flowers=["🌸","🌺","🌹"];
 let particles=[];
+
+// Web Audio API setup
+let audioCtx=null;
+let audioBuffer=null;
+fetch('https://cdn.pixabay.com/audio/2022/03/15/audio_2e3c4b3e9b.mp3')
+.then(r=>r.arrayBuffer())
+.then(arrayBuffer=>{
+  audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  audioCtx.decodeAudioData(arrayBuffer,(buffer)=>{
+    audioBuffer = buffer;
+  });
+})
+.catch(e=>console.log("Audio load error", e));
+
+function playSound(){
+  if(audioCtx && audioBuffer){
+    const source = audioCtx.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(audioCtx.destination);
+    source.start(0);
+  }
+}
 
 function createRocket(tx,ty){
   const sx=Math.random()*window.innerWidth;
@@ -92,13 +113,12 @@ function createRocket(tx,ty){
 }
 
 function explode(x,y){
-  for(let i=0;i<20;i++){ // reduced particles for smoothness
+  for(let i=0;i<20;i++){
     const a=Math.random()*2*Math.PI;
     const d=100+Math.random()*100;
     particles.push({x:x,y:y,tx:x+Math.cos(a)*d,ty:y+Math.sin(a)*d,char:flowers[Math.floor(Math.random()*flowers.length)],size:18+Math.random()*12});
   }
-  sound.currentTime=0;
-  sound.play();
+  playSound();
 }
 
 function animate(){
@@ -162,7 +182,7 @@ function showName(){
 
 // start fireworks
 function startFireworks(){
-  sound.play(); // trigger sound allowed by user click
+  if(audioCtx && audioCtx.state==="suspended"){audioCtx.resume();} // unlock audio on mobile
   particles=[];
   let count=0;
   function launchNext(){
@@ -174,6 +194,6 @@ function startFireworks(){
   launchNext();
 }
 </script>
+
 </body>
 </html>
-
