@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -38,7 +37,7 @@ p{margin:15px 0;line-height:1.6;}
 .button{background:#ff4d6d;color:white;border:none;padding:14px 30px;font-size:18px;border-radius:40px;cursor:pointer;margin-top:20px;position:relative;z-index:2;}
 .button::before{content:"";position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;border-radius:50px;border:2px solid #ff6b8b;animation:ring 2s infinite;}
 @keyframes ring{0%{transform:scale(1);opacity:0.7;}70%{transform:scale(1.3);opacity:0;}100%{opacity:0;}}
-/* fireworks container in front of card */
+/* fireworks container */
 .fireworks-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:20;}
 </style>
 </head>
@@ -52,7 +51,7 @@ Every day with you makes my world brighter.<br>
 You make me smile, laugh and feel loved.<br><br>
 I love you more than anything ✨</p>
 <div class="photo"><img src="us.jpg"></div>
-<button class="button" onclick="startFireworks()">Click for Surprise </button>
+<button class="button" onclick="startFireworks()">Click for Surprise 🎆</button>
 </div>
 
 <div id="fireworksContainer" class="fireworks-container"></div>
@@ -82,9 +81,10 @@ setInterval(shootingStar,4000);
 // fireworks
 const container=document.getElementById("fireworksContainer");
 const flowers=["🌸","🌺","🌹"];
+const nameLetters="MERYEME";
 let particles=[];
 
-// Web Audio API setup
+// Web Audio API
 let audioCtx=null;
 let audioBuffer=null;
 fetch('https://cdn.pixabay.com/audio/2022/03/15/audio_2e3c4b3e9b.mp3')
@@ -113,10 +113,12 @@ function createRocket(tx,ty){
 }
 
 function explode(x,y){
+  // flowers + name letters
   for(let i=0;i<20;i++){
     const a=Math.random()*2*Math.PI;
-    const d=100+Math.random()*100;
-    particles.push({x:x,y:y,tx:x+Math.cos(a)*d,ty:y+Math.sin(a)*d,char:flowers[Math.floor(Math.random()*flowers.length)],size:18+Math.random()*12});
+    const d=80+Math.random()*80;
+    let char = Math.random()<0.5 ? flowers[Math.floor(Math.random()*flowers.length)] : nameLetters[Math.floor(Math.random()*nameLetters.length)];
+    particles.push({x:x,y:y,tx:x+Math.cos(a)*d,ty:y+Math.sin(a)*d,char:char,size:18+Math.random()*12});
   }
   playSound();
 }
@@ -125,7 +127,7 @@ function animate(){
   container.innerHTML="";
   for(let i=0;i<particles.length;i++){
     let p=particles[i];
-    if(p.char){ // explosion piece
+    if(p.char){ 
       p.x += (p.tx-p.x)*0.07;
       p.y += (p.ty-p.y)*0.07;
       p.size *= 0.95;
@@ -138,7 +140,7 @@ function animate(){
       el.style.fontSize=p.size+"px";
       el.style.textShadow="0 0 20px #ff4d6d,0 0 30px #ff85a2";
       container.appendChild(el);
-    } else { // rocket
+    } else { 
       p.x += (p.tx-p.x)*0.08;
       p.y += (p.ty-p.y)*0.08;
       const el=document.createElement("div");
@@ -159,34 +161,13 @@ function animate(){
 }
 animate();
 
-// MERYEME finale
-function showName(){
-  const text="MERYEME";
-  const cx=window.innerWidth/2;
-  const cy=window.innerHeight*0.35;
-  for(let i=0;i<text.length;i++){
-    setTimeout(()=>{
-      const l=document.createElement("div");
-      l.textContent=text[i];
-      l.style.position="absolute";
-      l.style.left=cx+"px";
-      l.style.top=cy+"px";
-      l.style.fontSize="80px";
-      l.style.fontWeight="bold";
-      l.style.color="#ff4d6d";
-      l.style.textShadow="0 0 25px #ff85a2,0 0 40px #ffb6c1";
-      container.appendChild(l);
-    },i*200);
-  }
-}
-
-// start fireworks
 function startFireworks(){
-  if(audioCtx && audioCtx.state==="suspended"){audioCtx.resume();} // unlock audio on mobile
+  if(!audioCtx) return; 
+  if(audioCtx.state==="suspended"){audioCtx.resume();} // unlock audio
   particles=[];
   let count=0;
   function launchNext(){
-    if(count>=8){setTimeout(showName,1200);return;}
+    if(count>=8){return;}
     createRocket(Math.random()*window.innerWidth,Math.random()*window.innerHeight*0.6);
     count++;
     setTimeout(launchNext,1000);
@@ -194,6 +175,5 @@ function startFireworks(){
   launchNext();
 }
 </script>
-
 </body>
 </html>
