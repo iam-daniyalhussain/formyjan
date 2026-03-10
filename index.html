@@ -15,7 +15,7 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            overflow-x: hidden;  /* Prevents horizontal scroll from falling flowers */
+            overflow-x: hidden;
         }
         .card {
             background-color: rgba(255, 255, 255, 0.9);
@@ -26,7 +26,7 @@
             margin: 20px;
             border: 2px solid white;
             position: relative;
-            z-index: 10;         /* Keeps the card above the flowers */
+            z-index: 10;
         }
         h1 {
             color: #d64e6b;
@@ -82,21 +82,24 @@
             border: none;
             cursor: pointer;
             transition: background-color 0.3s;
+            font-size: 1.2em;
         }
         .button:hover {
             background-color: #b23b54;
+            transform: scale(1.05);
         }
 
         /* Falling flowers style */
         .flower {
             position: fixed;
             top: -10%;
-            color: #ffb3c6;      /* soft pink – you can change this */
+            color: #ffb3c6;
             font-size: 2rem;
             user-select: none;
             pointer-events: none;
             z-index: 9999;
             animation: fall linear forwards;
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
         }
 
         @keyframes fall {
@@ -105,7 +108,7 @@
                 opacity: 1;
             }
             100% {
-                transform: translateY(100vh) rotate(360deg);
+                transform: translateY(100vh) rotate(720deg);
                 opacity: 0;
             }
         }
@@ -116,7 +119,6 @@
         <div class="heart">❤️</div>
         <h1>For My Love</h1>
         
-        <!-- Your special line – kept as is -->
         East to the west , My Jaan is the bestest 
 
         <p>
@@ -136,48 +138,51 @@
             Your Husband ❤️
         </div>
         <div>
-            <!-- Button now triggers falling flowers instead of an alert -->
-            <button class="button" onclick="createFlowers(200)">Click for a Surprise</button>
+            <!-- 300+ flowers on click! -->
+            <button class="button" onclick="createFlowers(350)">Click for a Surprise 🌸</button>
         </div>
     </div>
 
     <script>
-        function createFlowers(count = 200) {
+        function createFlowers(count = 350) {
+            // Array of beautiful flower emojis and hearts
+            const flowers = ['🌸', '🌼', '🌺', '🌸', '🌸', '🌷', '🌹', '💮', '🏵️', '🌻', '🌸', '🌸', '❤️', '💕'];
+            
             for (let i = 0; i < count; i++) {
-                const flower = document.createElement('div');
-                flower.classList.add('flower');
-                
-                // Choose a random flower emoji – you can edit this list!
-                const flowers = ['🌸', '🌼', '🌺', '🌸', '🌸', '🌷', '🌹'];
-                flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
-                
-                // Random horizontal position
-                flower.style.left = Math.random() * 200 + '%';
-                
-                // Random duration between 3 and 7 seconds
-                const duration = 3 + Math.random() * 5;
-                flower.style.animationDuration = duration + 's';
-                
-                // Random delay so they don't all start at once
-                flower.style.animationDelay = Math.random() * 2 + 's';
-                
-                // Random size between 1.5rem and 3.5rem
-                const size = 1.5 + Math.random() * 2;
-                flower.style.fontSize = size + 'rem';
-                
-                // Slight random rotation
-                flower.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
-                
-                document.body.appendChild(flower);
-                
-                // Remove flower after animation ends to keep the page clean
-                flower.addEventListener('animationend', () => {
-                    flower.remove();
-                });
+                setTimeout(() => {
+                    const flower = document.createElement('div');
+                    flower.classList.add('flower');
+                    
+                    // Random flower emoji
+                    flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+                    
+                    // Random horizontal position (0% to 100%)
+                    flower.style.left = Math.random() * 100 + '%';
+                    
+                    // SLOWER animation: between 8 and 12 seconds
+                    const duration = 8 + Math.random() * 4;  // 8-12 seconds
+                    flower.style.animationDuration = duration + 's';
+                    
+                    // Random delay so they don't all start at once
+                    flower.style.animationDelay = Math.random() * 3 + 's';
+                    
+                    // Random size between 1rem and 4rem
+                    const size = 1 + Math.random() * 3;
+                    flower.style.fontSize = size + 'rem';
+                    
+                    // Random rotation start
+                    flower.style.transform = `rotate(${Math.random() * 60 - 30}deg)`;
+                    
+                    // Add to page
+                    document.body.appendChild(flower);
+                    
+                    // Remove after animation
+                    flower.addEventListener('animationend', () => {
+                        flower.remove();
+                    });
+                }, i * 2); // Small delay between each flower for smoother effect
             }
         }
     </script>
 </body>
 </html>
-
-
